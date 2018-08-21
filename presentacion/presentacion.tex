@@ -1,0 +1,234 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+
+\mode<presentation> {
+	
+	% The Beamer class comes with a number of default slide themes
+	% which change the colors and layouts of slides. Below this is a list
+	% of all the themes, uncomment each in turn to see what they look like.
+	
+	%\usetheme{default}
+	%\usetheme{AnnArbor}
+	%\usetheme{Antibes}
+	%\usetheme{Bergen}
+	%\usetheme{Berkeley}
+	%\usetheme{Berlin}
+	%\usetheme{Boadilla}
+	%\usetheme{CambridgeUS}
+	%\usetheme{Copenhagen}
+	\usetheme{Darmstadt}
+	%\usetheme{Dresden}
+	%--\usetheme{Frankfurt}
+	%\usetheme{Goettingen}
+	%\usetheme{Hannover}
+	%--\usetheme{Ilmenau}
+	%--\usetheme{JuanLesPins}
+	%\usetheme{Luebeck}
+	%\usetheme{Madrid}
+	%\usetheme{Malmoe}
+	%\usetheme{Marburg}
+	%\usetheme{Montpellier}
+	%\usetheme{PaloAlto}
+	%\usetheme{Pittsburgh}
+	%\usetheme{Rochester}
+	%\usetheme{Singapore}
+	%\usetheme{Szeged}
+	%\usetheme{Warsaw}
+	
+	% As well as themes, the Beamer class has a number of color themes
+	% for any slide theme. Uncomment each of these in turn to see how it
+	% changes the colors of your current slide theme.
+	
+	%\usecolortheme{albatross}
+	%\usecolortheme{beaver}
+	%\usecolortheme{beetle}
+	%--\usecolortheme{crane}
+	%\usecolortheme{dolphin}
+	%\usecolortheme{dove}
+	%\usecolortheme{fly}
+	%\usecolortheme{lily}
+	%\usecolortheme{orchid}
+	%\usecolortheme{rose}
+	%\usecolortheme{seagull}
+	%\usecolortheme{seahorse}
+	\usecolortheme{whale}
+	%\usecolortheme{wolverine}
+	
+	%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+	\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+	
+	%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+
+\usepackage[spanish]{babel}
+\selectlanguage{spanish}
+\usepackage[utf8]{inputenc} %Se usa para que admita texto con tildes
+
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{color}	%Se usa para definir colores en el documento
+\usepackage{ulem}	%Se usa para poner código en el documento.
+\usepackage{bm}	%Se usa para hacer expresiones matemáticas en negrita
+\usepackage{diagbox}	%Se usa para hacer la linea diagonal dentro de la celda de una tabla
+
+\usepackage{mathtools}	%se usa para hacer recuadros dentro de align con \Aboxed{}
+\usepackage{chngcntr}	%se usa para resetear el contador de ecuaciones
+
+\usepackage{empheq}		%se usa para hacer ecuaciones alineadas dentro de una caja.
+\newcommand*\widefbox[1]{\fbox{\hspace{2em}#1\hspace{2em}}}
+
+\usepackage{alltt}
+\usepackage{pgfplots}
+\usepackage{multicol}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+
+%configuracion de package {chngcntr}
+\counterwithin*{equation}{section}
+\counterwithin*{equation}{subsection}
+
+%Definición de colores para el documento
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+%Definicion de ulem para el código
+\lstset{
+	language=Octave,
+	aboveskip=1mm,
+	belowskip=1mm,
+	showstringspaces=false,
+	columns=flexible,
+	basicstyle={\ttfamily},
+	numbers=left,
+	numberstyle=\tiny\color{gray},
+	keywordstyle=\color{blue},
+	commentstyle=\color{dkgreen},
+	stringstyle=\color{mauve},
+	breaklines=true,
+	breakatwhitespace=true,
+	tabsize=3,
+	basicstyle=\tiny
+}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[Ataques Man in The Middle]{Ataques Man-in-the-Middle} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{Juan Aparicio} % Your name
+\institute[UDE] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+	Universidad de la Empresa \\ % Your institution for the title page
+	%\textit{john@smith.com} % Your email address
+}
+\date{\today} % Date, can be changed to a custom date
+
+\begin{document}
+	
+\begin{frame}
+	\titlepage % Print the title page as the first slide
+\end{frame}
+
+\begin{frame}
+\frametitle{Temario} % Table of contents slide, comment this block out to remove it
+\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+%	PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+
+%------------------------------------------------
+\section{Man-in-the-Middle} % Sections can be created in order to organize your presentation into discrete blocks, all sections and subsections are automatically printed in the table of contents as an overview of the talk
+%------------------------------------------------
+
+\subsection{Introducción}
+\begin{frame}
+\frametitle{Introducción}
+\par Un ataque Man-in-the-Middle, es un ataque que se basa en posicionar una computadora entre medio de otras 2 computadoras que se están comunicando. 
+\par Al estar en el medio de la comunicación de 2 computadoras, el atacante puede escuchar y potencialmente cambiar el contenido de los mensajes que se están enviando en el canal.
+\end{frame}
+
+%------------------------------------------------
+\section{Como efectuar el ataque}
+\subsection{ARP cache poisoning}
+\begin{frame}[allowframebreaks]
+\frametitle{ARP cache Poisoning}
+\par Como el switch solo va a enviar los paquetes a la computadora que le corresponden, lo que se hace es \textit{engañar} a la computadora objetivo o switch, para que piense que la computadora del atacante es la computadora atacada.
+\par Cuando se desea establecer comunicación con otra máquina en la red, se usa su dirección IP (también se puede usar le hostname). Para saber que máquina física tiene esa dirección IP, se envía un mensaje tipo broadcast que pregunta \textit{"Who has IP address x.x.x.x"}.
+\par La máquina con esa dirección IP responde \textit{"I have IP address x.x.x.x and my MAC is y:y:y:y:y:y"}
+\par La máquina luego guarda en su cache ARP ese mapeo de IP - MAC.
+\par Lo que se hace entonces es enviar constantemente paquetes de respuesta falsos que digan que mi MAC corresponde a la IP del destino.
+\par Luego la máquina atacada va a pensar que la máquina del atacante es en realidad la máquina destino, y envía su tráfico a la máquina del atacante.
+\end{frame}
+
+%------------------------------------------------
+
+\subsection{Denial of Service}
+\begin{frame}[allowframebreaks]
+	\frametitle{Denial of Service}
+	\par Una vez que se efectuó el ataque Man-in-the-Middle, si se quiere hacer un denial of service, no hay que hacer nada mas, si no se quiere hacer un denial of service, se tiene que hacer un forwardeo de IP.
+	\par Si no se hace el forwardeo de IP, entonces el tráfico que quiere enviar la máquina atacada, va a \textit{morir} cuando llegue a la máquina del atacante, porque la máquina del atacante no va a saber que hacer con el tráfico que tiene como destino otra IP.
+	\par Si se hace el forwardeo de IP, entonces los paquetes que llegan a la máquina del atacante que van destinado a otra IP (la que en realidad se quiere enviar), van a ser forwardeados a la dirección correcta.
+\end{frame}
+
+%------------------------------------------------
+
+\subsection{Captura de tráfico de red}
+\begin{frame}[allowframebreaks]
+	\frametitle{Captura de tráfico de red}
+	\par Una vez habilitado el forwardeo de IP, los paquetes que pasan por la máquina del atacante pueden ser capturados en un archivo para su posterior análisis.
+	\par Los paquetes capturados contienen toda la información que se ha transmitido por el canal. Los datos que se pueden ver por ejemplo son:
+	\begin{itemize}
+		\item Consultas a los servidores DNS (historial de sitios accedidos)
+		\item Tráfico de páginas web ya sea encriptado o desencriptado.
+		\item Si se accedió a algún sitio HTTP (no encriptado) y se hizo un inicio de sesión se pueden ver las credenciales ingresadas (usuario y contraseña).
+	\end{itemize}
+\end{frame}
+
+%------------------------------------------------
+
+\subsection{DNS spoofing}
+\begin{frame}[allowframebreaks]
+	\frametitle{DNS spoofing}
+	\par Una vez que la máquina del atacante se encuentra posicionada en el medio del canal de comunicación, lo que se hace es interceptar las respuesta del servidor DNS (puerto 53) y se modifica el contenido de la respuesta (Por ejemplo 64.233.190.106 que es la dirección de uno de los servidores de google por 192.168.0.107 que puede ser la ip de un apache de una pc en la red).
+	\par Luego la máquina atacada recibe la respuesta modificada y va a pensar que google.com se encuentra en una de las máquinas en la red.
+\end{frame}
+
+%------------------------------------------------
+
+\section{Demostración}
+\begin{frame}
+\Huge{\centerline{Demostración}}
+\end{frame}
+
+%------------------------------------------------
+\part{}
+\begin{frame}
+\Huge{\centerline{Fin}}
+\end{frame}
+
+%------------------------------------------------
+
+\end{document}

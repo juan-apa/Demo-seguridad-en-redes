@@ -1,0 +1,10 @@
+\babel@toc {spanish}{}
+\babel@toc {spanish}{}
+\beamer@sectionintoc {1}{Man-in-the-Middle}{3}{0}{1}
+\beamer@subsectionintoc {1}{1}{Introducci\IeC {\'o}n}{3}{0}{1}
+\beamer@sectionintoc {2}{Como efectuar el ataque}{4}{0}{2}
+\beamer@subsectionintoc {2}{1}{ARP cache poisoning}{4}{0}{2}
+\beamer@subsectionintoc {2}{2}{Denial of Service}{6}{0}{2}
+\beamer@subsectionintoc {2}{3}{Captura de tr\IeC {\'a}fico de red}{7}{0}{2}
+\beamer@subsectionintoc {2}{4}{DNS spoofing}{8}{0}{2}
+\beamer@sectionintoc {3}{Demostraci\IeC {\'o}n}{9}{0}{3}
